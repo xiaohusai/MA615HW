@@ -1,0 +1,41 @@
+---
+title: "615HW111"
+output: pdf_document
+---
+
+We want to know how many pages in a book will have more than 8 misprints.
+Make an n x k table that shows the probability that n or fewer pages in a 50 page book
+will have more than 8 misprints.
+
+We use possion distribution with lambda 2 to calculate the probability of more than 8 misprints on a page. After we know the probability of more than 8 misprints on a page, we can use it into binomial distribution to figure out the probability that there are no more than n pages with more than 8 misprints. Then we input these probabilities we got from the binomial distribution in to the table we created by using the as.data.frame function. 
+
+```{r}
+
+
+library(knitr) 
+library(kableExtra)
+
+x <- c(1:8)
+y <- c(1:50)
+
+plist <- as.data.frame(matrix(ncol = 8, nrow = 50, dimnames = list(y,x)))
+
+
+  for (j in x){
+    for (i in y){
+      p5mis <- ppois(j,2,lower.tail=FALSE)
+        plist[i,j] <- pbinom(i,50,p5mis)}
+}
+
+
+knitr::kable(plist)
+colnames(plist)<-x
+```
+
+
+```{r}
+knitr::include_graphics("abook.jpg")
+
+
+
+```
