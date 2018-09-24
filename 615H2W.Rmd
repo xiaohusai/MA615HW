@@ -1,0 +1,36 @@
+---
+title: "612H2W"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+#We first plot the data.
+plot(LakeHuron)
+
+#define the time range
+years <- c(1875:1972)
+
+#plot data with scatter
+ggplot(data = as.data.frame(LakeHuron), mapping = aes(x = years, y= LakeHuron)) + geom_point()
+
+#plot data with line
+ggplot(data = as.data.frame(LakeHuron), mapping = aes(x = years, y= LakeHuron)) + geom_point() + geom_line(color = "yellow")
+
+
+#plot data with smoother fn
+ggplot(data = as.data.frame(LakeHuron), mapping = aes(x = years, y= LakeHuron)) + geom_point() + geom_line(color = "green") + geom_smooth(stat = "smooth", color = "orange", se = FALSE)
+
+
+
+
+
+
+
+
+
+```
