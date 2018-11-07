@@ -1,0 +1,79 @@
+---
+title: "Mapping-Restaurants"
+author: 'Team members: Jinfei Xue, Guangyan Yu, Yaotang Luo, Shiyu Zhang'
+date: "Nov 6, 2018"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Deal with the data
+
+```{r}
+data <- read.csv("mayorsfoodcourt.csv", na.strings = c("", "NA"))
+# Select the most severe violation of restaurants in Allson
+library(dplyr)
+Allston <- data %>%
+  filter(CITY == "Allston") %>%
+  filter(Location != "NA" & ViolStatus == "Fail" & ViolLevel == "***")
+
+# Devide the location into longitude and latitude
+Allston$Location<- as.character(Allston$Location)
+Allston$long <- as.numeric(substring(Allston$Location, 16, 28))
+Allston$lat <- as.numeric(substring(Allston$Location, 2, 13))
+Allston$ViolLevel <- as.character(Allston$ViolLevel)
+```
+
+## Map 1: Leaflet map
+```{r}
+#install.packages("mapview")
+library(mapview)
+library(leaflet)
+library(knitr)
+m <- Allston[, c("lat", "long")]%>%
+  leaflet()%>%
+  addTiles()%>%
+  addMarkers()%>%
+  setView(-71.13062, 42.35308, zoom = 15)
+mapshot(m, file = "Rplot.png")
+knitr::include_graphics("Rplot.png")
+```
+
+*The map shows the locations of restaurants where the most severe violation level happened in Allston.*
+
+## Map 2: Static map
+```{r, warning=FALSE,message=FALSE}
+library(ggmap)
+library(ggplot2)
+
+qmplot(long, lat, data = Allston, maptype = "watercolor", zoom = 15, 
+       color = I("red"), size = I(2.5))
+
+```
+
+*The map shows the locations of restaurants where the most severe violation level happened in Allston.*
+
+## Map 3: Google map
+*Because we should use the key for the google map, but the key we have gotten is invalid, we just put the code here.*
+```{r, warning=FALSE,message=FALSE}
+Allston <- data %>%
+  filter(CITY == "Allston") %>%
+  filter(Location != "NA" & ViolStatus == "Fail")
+
+# Devide the location into longitude and latitude
+Allston$Location<- as.character(Allston$Location)
+Allston$long <- as.numeric(substring(Allston$Location, 16, 28))
+Allston$lat <- as.numeric(substring(Allston$Location, 2, 13))
+
+#map <- get_googlemap(center = c(-71.13062, 42.35660), zoom = 15, key ="AIzaSyDsMKikezjPO_1HDzS_QpUX1_wC49M006E")
+#ggmap(map)+
+  #geom_point(aes(x = long, y = lat, colour = ViolLevel), data = Allston) +
+  #scale_colour_discrete(name="Violation Level")
+```
+
+*The map would show the locations of restaurants where the violations in different levels happened in Allston.*
